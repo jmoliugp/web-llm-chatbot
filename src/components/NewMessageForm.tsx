@@ -1,9 +1,11 @@
 "use client";
 
-import { useSession } from "next-auth/react";
 import { useState } from "react";
+import { gql, useMutation } from "@apollo/client";
+import { useSession } from "next-auth/react";
 
 export const NewMessageForm = () => {
+  // const [addNewMessage] = useMutation(AddNewMessageMutation);
   const [body, setBody] = useState<string>();
   const { data: session } = useSession();
   const addNewMessage = () => console.log("NEW MSG");

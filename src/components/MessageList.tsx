@@ -4,11 +4,12 @@ import { Message, MessageProps } from "@/components/Message";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 
+const sampleAvatar = "avatar.svg";
 const stubMessages: MessageProps[] = [
   {
     id: "1",
     username: "alice",
-    avatar: "https://example.com/avatar_alice.png",
+    avatar: sampleAvatar,
     body: "Hey Bob, how's it going?",
     likes: 2,
     createdAt: "2024-06-08T10:00:00Z",
@@ -16,7 +17,7 @@ const stubMessages: MessageProps[] = [
   {
     id: "2",
     username: "bob",
-    avatar: "https://example.com/avatar_bob.png",
+    avatar: sampleAvatar,
     body: "Hi Alice! I'm doing well, thanks. How about you?",
     likes: 1,
     createdAt: "2024-06-08T10:02:00Z",
@@ -24,7 +25,7 @@ const stubMessages: MessageProps[] = [
   {
     id: "3",
     username: "alice",
-    avatar: "https://example.com/avatar_alice.png",
+    avatar: sampleAvatar,
     body: "I'm great, just working on a new project. Have you heard about the new TypeScript features?",
     likes: 3,
     createdAt: "2024-06-08T10:05:00Z",
@@ -32,7 +33,7 @@ const stubMessages: MessageProps[] = [
   {
     id: "4",
     username: "bob",
-    avatar: "https://example.com/avatar_bob.png",
+    avatar: sampleAvatar,
     body: "Yes, I have! They seem really useful, especially the improved type inference. Are you planning to use them?",
     likes: 2,
     createdAt: "2024-06-08T10:07:00Z",
@@ -40,7 +41,7 @@ const stubMessages: MessageProps[] = [
   {
     id: "5",
     username: "alice",
-    avatar: "https://example.com/avatar_alice.png",
+    avatar: sampleAvatar,
     body: "Definitely! I think they'll make our codebase much cleaner. Let's catch up later and discuss more?",
     likes: 4,
     createdAt: "2024-06-08T10:10:00Z",
@@ -48,7 +49,7 @@ const stubMessages: MessageProps[] = [
   {
     id: "6",
     username: "bob",
-    avatar: "https://example.com/avatar_bob.png",
+    avatar: sampleAvatar,
     body: "Sounds like a plan. Talk to you later!",
     likes: 1,
     createdAt: "2024-06-08T10:12:00Z",

@@ -6,7 +6,7 @@ export function Header() {
 
   return (
     <header className="p-6 bg-white/5 border-b border-[#363739]">
-      <div className="max-w-4xl mx-auto">
+      <div className="mx-auto">
         <div className="flex justify-between items-center">
           <span className="text-white font-bold text-xl">Chatbase</span>
           {session ? (

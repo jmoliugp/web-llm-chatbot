@@ -6,9 +6,12 @@ export function Header() {
 
   return (
     <header className="p-6 bg-white/5 border-b border-[#363739]">
-      <div className="max-w-4xl mx-auto">
+      <div className="mx-auto">
         <div className="flex justify-between items-center">
-          <span className="text-white font-bold text-xl">Chatbase</span>
+          <div className="flex flex-row justify-center items-center gap-2">
+            <Image width={34} height={34} src="chatIcon.svg" alt={"App icon"} />
+            <span className="text-white font-bold text-xl">Chatbase</span>
+          </div>
           {session ? (
             <div className="flex space-x-1">
               {session?.user?.image && (
@@ -23,7 +26,7 @@ export function Header() {
               )}
               <button
                 onClick={() => signOut()}
-                className="bg-white/5 rounded h-12 px-6 font-medium text-white border border-transparent"
+                className="bg-white/5 rounded h-12 px-6 font-medium text-white border border-transparent active:opacity-75"
               >
                 Sign out
               </button>
@@ -32,8 +35,14 @@ export function Header() {
             <div className="flex items-center">
               <button
                 onClick={() => signIn("github")}
-                className="bg-white/5 rounded h-12 px-6 font-medium text-white text-lg border border-transparent inline-flex items-center"
+                className="bg-white/5  gap-3 rounded h-12 px-6 font-medium text-white text-lg border border-transparent inline-flex items-center"
               >
+                <Image
+                  width={26}
+                  height={26}
+                  src="github.svg"
+                  alt={"Github icon"}
+                />
                 Sign in with GitHub
               </button>
             </div>

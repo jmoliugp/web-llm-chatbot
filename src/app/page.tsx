@@ -14,7 +14,7 @@ export default function Home() {
       <Header />
       {session ? (
         <>
-          <div className="flex-1 overflow-y-scroll p-6">
+          <div className="flex-1  p-6 ">
             <div className="max-w-4xl mx-auto">
               <div className="flex justify-between items-center">
                 <MessageList />

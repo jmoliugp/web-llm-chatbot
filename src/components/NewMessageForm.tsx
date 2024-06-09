@@ -24,6 +24,7 @@ export const NewMessageForm = () => {
     >
       <input
         autoFocus
+        autoComplete="off"
         id="message"
         name="message"
         placeholder="Write a message..."
@@ -33,7 +34,7 @@ export const NewMessageForm = () => {
       />
       <button
         type="submit"
-        className="bg-[#222226] rounded h-12 font-medium text-white w-24 text-lg border border-transparent"
+        className="bg-[#222226] active:opacity-75 hover:cursor-pointer  rounded h-12 font-medium text-white w-24 text-lg border border-transparent "
         disabled={!body || !session}
       >
         Send

@@ -17,12 +17,12 @@ interface Props {
 export const Message = ({ message }: Props) => {
   const { data: session } = useSession();
 
+  const isAuthorMsg = message.username === session?.user?.name;
+
   return (
     <div
-      className={`flex relative space-x-1 ${
-        message.username === session?.user?.name
-          ? "flex-row-reverse space-x-reverse"
-          : "flex-row"
+      className={`flex relative space-x-1 gap-2 ${
+        isAuthorMsg ? "flex-row-reverse space-x-reverse" : "flex-row"
       }`}
     >
       {message?.avatar && (
@@ -37,12 +37,10 @@ export const Message = ({ message }: Props) => {
       )}
       <span
         className={`inline-flex rounded space-x-2 items-start p-3 text-white ${
-          message.username === session?.user?.name
-            ? "bg-[#4a9c6d]"
-            : "bg-[#363739]"
+          isAuthorMsg ? "bg-[#4a9c6d]" : "bg-[#363739]"
         } `}
       >
-        {message.username !== session?.user?.name && (
+        {isAuthorMsg && (
           <span className="font-bold">{message.username}:&nbsp;</span>
         )}
         {message.body}

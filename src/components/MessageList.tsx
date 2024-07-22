@@ -88,7 +88,7 @@ export const MessageList = () => {
   return (
     <div className="flex flex-col min-w-10 space-y-7  w-full">
       {!inView && (
-        <div className="py-1.5 w-full px-3 z-10 text-xs absolute flex justify-center bottom-0 mb-[120px] inset-x-0">
+        <div className="py-1.5 w-full px-3 z-10 text-xs absolute flex justify-center bottom-0 mb-28 inset-x-0">
           <button
             className="py-1.5 px-3 text-xs bg-zinc-900 border border-neutral-700 rounded-full text-white font-medium"
             onClick={() => entry?.target?.scrollIntoView({ behavior: "auto" })}

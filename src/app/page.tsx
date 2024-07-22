@@ -1,13 +1,11 @@
-"use client";
-
 import { Header } from "@/components/Header";
 import { MessageList } from "@/components/MessageList";
 import { NewMessageForm } from "@/components/NewMessageForm";
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
 
-import { useSession } from "next-auth/react";
-
-export default function Home() {
-  const { data: session } = useSession();
+export default async function Home() {
+  const session = await getServerSession(authOptions);
 
   return (
     <div className="flex flex-col h-screen w-screen">

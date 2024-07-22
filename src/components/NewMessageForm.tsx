@@ -30,11 +30,11 @@ export const NewMessageForm = () => {
         placeholder="Write a message..."
         value={body}
         onChange={(e) => setBody(e.target.value)}
-        className="flex-1 h-12 px-3 rounded bg-[#222226] border border-[#222226] focus:border-[#222226] focus:outline-none text-white placeholder-white"
+        className="flex-1 h-12 px-3 rounded bg-neutral-800 border border-neutral-800 focus:border-neutral-800 focus:outline-none text-white placeholder-white"
       />
       <button
         type="submit"
-        className="bg-[#222226] active:opacity-75 hover:cursor-pointer  rounded h-12 font-medium text-white w-24 text-lg border border-transparent "
+        className="bg-neutral-800 active:opacity-75 hover:cursor-pointer  rounded h-12 font-medium text-white w-24 text-lg border border-transparent "
         disabled={!body || !session}
       >
         Send

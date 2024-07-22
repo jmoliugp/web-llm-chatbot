@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <SessionWrapper>
-        <body className="bg-[#131316]">{children}</body>
+        <body className="bg-neutral-900">{children}</body>
       </SessionWrapper>
     </html>
   );

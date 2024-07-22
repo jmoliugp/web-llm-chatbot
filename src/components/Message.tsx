@@ -37,7 +37,7 @@ export const Message = ({ message }: Props) => {
       )}
       <span
         className={`inline-flex rounded space-x-2 items-start p-3 text-white ${
-          isAuthorMsg ? "bg-[#4a9c6d]" : "bg-[#363739]"
+          isAuthorMsg ? "bg-emerald-700" : "bg-neutral-700"
         } `}
       >
         {isAuthorMsg && (

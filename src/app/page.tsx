@@ -21,7 +21,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="p-6 bg-white/5 border-t border-[#363739]">
+          <div className="p-6 bg-white/5 border-t border-neutral-700">
             <div className="max-w-4xl mx-auto">
               <NewMessageForm />
             </div>

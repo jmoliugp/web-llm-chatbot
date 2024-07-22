@@ -1,5 +1,5 @@
 {
-  "name": "next-chat",
+  "name": "web-llm-chatbot",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@apollo/client": "^3.10.4",
+    "@mlc-ai/web-llm": "^0.2.46",
+    "@prisma/client": "^5.17.0",
     "graphql": "^16.8.1",
     "jsonwebtoken": "^9.0.2",
     "next": "14.2.3",
@@ -27,6 +29,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
     "postcss": "^8",
+    "prisma": "^5.17.0",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }

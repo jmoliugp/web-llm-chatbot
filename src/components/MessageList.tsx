@@ -1,7 +1,8 @@
 "use client";
 
 import { Message, MessageProps } from "@/components/Message";
-import { useEffect } from "react";
+import { useLatestChatQuery } from "@/networking/queries/useLatestChatQuery";
+import React, { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 
 const sampleAvatar1 = "/images/avatarMaleAi.webp";
@@ -11,7 +12,7 @@ const stubMessages: MessageProps[] = [
     id: "1",
     username: "alice",
     avatar: sampleAvatar2,
-    body: "Hey Bob, how's it going?",
+    content: "Hey Bob, how's it going?",
     likes: 2,
     createdAt: "2024-06-08T10:00:00Z",
   },
@@ -19,7 +20,7 @@ const stubMessages: MessageProps[] = [
     id: "2",
     username: "bob",
     avatar: sampleAvatar1,
-    body: "Hi Alice! I'm doing well, thanks. How about you?",
+    content: "Hi Alice! I'm doing well, thanks. How about you?",
     likes: 1,
     createdAt: "2024-06-08T10:02:00Z",
   },
@@ -27,7 +28,8 @@ const stubMessages: MessageProps[] = [
     id: "3",
     username: "alice",
     avatar: sampleAvatar2,
-    body: "I'm great, just working on a new project. Have you heard about the new TypeScript features?",
+    content:
+      "I'm great, just working on a new project. Have you heard about the new TypeScript features?",
     likes: 3,
     createdAt: "2024-06-08T10:05:00Z",
   },
@@ -35,7 +37,8 @@ const stubMessages: MessageProps[] = [
     id: "4",
     username: "bob",
     avatar: sampleAvatar1,
-    body: "Yes, I have! They seem really useful, especially the improved type inference. Are you planning to use them?",
+    content:
+      "Yes, I have! They seem really useful, especially the improved type inference. Are you planning to use them?",
     likes: 2,
     createdAt: "2024-06-08T10:07:00Z",
   },
@@ -43,7 +46,8 @@ const stubMessages: MessageProps[] = [
     id: "5",
     username: "alice",
     avatar: sampleAvatar2,
-    body: "Definitely! I think they'll make our codebase much cleaner. Let's catch up later and discuss more?",
+    content:
+      "Definitely! I think they'll make our codebase much cleaner. Let's catch up later and discuss more?",
     likes: 4,
     createdAt: "2024-06-08T10:10:00Z",
   },
@@ -51,13 +55,27 @@ const stubMessages: MessageProps[] = [
     id: "6",
     username: "bob",
     avatar: sampleAvatar1,
-    body: "Sounds like a plan. Talk to you later!",
+    content: "Sounds like a plan. Talk to you later!",
     likes: 1,
     createdAt: "2024-06-08T10:12:00Z",
   },
 ];
 
-export const MessageList = () => {
+interface Props {
+  user: {
+    id: number;
+    email: string;
+    name: string;
+    image?: string;
+  };
+}
+
+export const MessageList: React.FC<Props> = (props) => {
+  const {
+    data: latestChatRes,
+    isLoading,
+    isError,
+  } = useLatestChatQuery(props.user.id);
   const [scrollRef, inView, entry] = useInView({
     trackVisibility: true,
     delay: 500,
@@ -69,18 +87,16 @@ export const MessageList = () => {
     }
   }, [entry, inView]);
 
-  const messages = stubMessages;
-  const loading = false;
-  const error = false;
+  const messages = latestChatRes?.messages ?? [];
 
-  if (loading)
+  if (isLoading)
     return (
       <div className="h-full flex items-center justify-center">
         <p className="text-white">Fetching most recent chat messages.</p>
       </div>
     );
 
-  if (error)
+  if (isError)
     return (
       <p className="text-white">Something went wrong. Refresh to try again.</p>
     );
@@ -97,9 +113,22 @@ export const MessageList = () => {
           </button>
         </div>
       )}
-      {messages.map((msg) => (
-        <Message key={msg?.id} message={msg} />
-      ))}
+      {messages.map((msg) => {
+        const isAuthorMsg = msg.sender === "USER";
+        const avatar = isAuthorMsg ? props.user.image : "/chatbotAvatar.webp";
+
+        return (
+          <Message
+            key={msg?.id}
+            content={msg.content}
+            createdAt={msg.createdAt}
+            id={msg.id}
+            isAuthorMsg={isAuthorMsg}
+            username={props.user.name}
+            avatar={avatar}
+          />
+        );
+      })}
       <div ref={scrollRef} />
     </div>
   );

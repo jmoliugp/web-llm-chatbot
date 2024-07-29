@@ -22,11 +22,11 @@ interface RetrieveLatestChatResponse {
 }
 
 export async function retrieveLatestChat(
-  email: string
+  userId: number
 ): Promise<RetrieveLatestChatResponse | null> {
   const userChats = await prisma.chat.findMany({
     where: {
-      user: { email },
+      user: { id: userId },
     },
     orderBy: { createdAt: "desc" },
   });
@@ -52,4 +52,35 @@ export async function retrieveLatestChat(
       type: message.type,
     })),
   };
+}
+
+export async function createNewChat(userId: number) {
+  try {
+    const result = await prisma.$transaction(async (prisma) => {
+      const newChat = await prisma.chat.create({
+        data: {
+          userId,
+        },
+      });
+
+      await prisma.message.create({
+        data: {
+          chatId: newChat.id,
+          sender: "LLM",
+          content:
+            "Welcome! I am your assistant. You can ask me anything or request help with specific topics.",
+          type: "TEXT",
+        },
+      });
+
+      return newChat;
+    });
+
+    return result;
+  } catch (error) {
+    console.error("Error creating new chat: ", error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
 }

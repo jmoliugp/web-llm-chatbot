@@ -1,4 +1,8 @@
-import { createNewChat, retrieveLatestChat } from "@/actions/chat";
+import {
+  createNewChat,
+  getLatestChat,
+  retrieveLatestChat,
+} from "@/actions/chat";
 import { Header } from "@/components/Header";
 import { MessageList } from "@/components/MessageList";
 import { NewMessageForm } from "@/components/NewMessageForm";
@@ -8,15 +12,12 @@ import { getServerSession, Session } from "next-auth";
 async function initChat(session: Session | null) {
   if (session == null) return;
 
-  const latestChat = await retrieveLatestChat(session?.user.id);
-  if (latestChat == null) return;
-
-  createNewChat(session.user.id);
+  return getLatestChat(session.user.id);
 }
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
-  await initChat(session);
+  const chat = await initChat(session);
 
   return (
     <div className="flex flex-col h-screen w-screen">
@@ -26,7 +27,7 @@ export default async function Home() {
           <div className="flex-1  p-6 ">
             <div className="max-w-4xl mx-auto">
               <div className="flex justify-between items-center">
-                <MessageList user={session.user} />
+                <MessageList chat={chat!} user={session.user} />
               </div>
             </div>
           </div>

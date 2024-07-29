@@ -21,6 +21,48 @@ interface RetrieveLatestChatResponse {
   }[];
 }
 
+export interface Chat {
+  id: number;
+  userId: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export async function getLatestChat(userId: number): Promise<Chat> {
+  const userChats = await prisma.chat.findMany({
+    where: {
+      user: { id: userId },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  if (userChats.length > 0) return userChats[0];
+
+  return createNewChat(userId);
+}
+
+export async function getMessages(
+  chatId: number
+): Promise<RetrieveLatestChatResponse | null> {
+  const messages = await prisma.message.findMany({
+    where: {
+      chatId,
+    },
+  });
+
+  return {
+    id: chatId,
+    messages: messages.map((message) => ({
+      id: message.id,
+      chatId: message.chatId,
+      sender: message.sender,
+      content: message.content,
+      createdAt: message.createdAt,
+      type: message.type,
+    })),
+  };
+}
+
 export async function retrieveLatestChat(
   userId: number
 ): Promise<RetrieveLatestChatResponse | null> {

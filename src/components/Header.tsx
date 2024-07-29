@@ -1,3 +1,5 @@
+"use client";
+
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 
@@ -5,12 +7,14 @@ export function Header() {
   const { data: session } = useSession();
 
   return (
-    <header className="p-6 bg-white/5 border-b border-[#363739]">
+    <header className="p-6 bg-white/5 border-b border-neutral-700">
       <div className="mx-auto">
         <div className="flex justify-between items-center">
           <div className="flex flex-row justify-center items-center gap-2">
             <Image width={34} height={34} src="chatIcon.svg" alt={"App icon"} />
-            <span className="text-white font-bold text-xl">Chatbase</span>
+            <span className="text-white font-bold text-xl">
+              Web-Llm-Chatbot
+            </span>
           </div>
           {session ? (
             <div className="flex space-x-1">

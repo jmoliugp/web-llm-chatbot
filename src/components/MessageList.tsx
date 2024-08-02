@@ -1,7 +1,9 @@
 "use client";
 
 import { Chat } from "@/actions/chat";
-import { Message, MessageProps } from "@/components/Message";
+import { useWebLlmContext } from "@/components/LlmProvider";
+import { Message } from "@/components/Message";
+import { assets } from "@/lib/constants";
 import { useMessagesQuery } from "@/networking/queries/useMessagesQuery";
 import React, { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
@@ -22,12 +24,17 @@ export const MessageList: React.FC<Props> = (props) => {
     trackVisibility: true,
     delay: 500,
   });
+  const { llmProgressReport, initWebLlm } = useWebLlmContext();
 
   useEffect(() => {
     if (inView) {
       entry?.target?.scrollIntoView({ behavior: "auto" });
     }
   }, [entry, inView]);
+
+  useEffect(() => {
+    initWebLlm();
+  }, []);
 
   const messages = chat?.messages ?? [];
 
@@ -57,11 +64,12 @@ export const MessageList: React.FC<Props> = (props) => {
       )}
       {messages.map((msg) => {
         const isAuthorMsg = msg.sender === "USER";
-        const avatar = isAuthorMsg ? props.user.image : "/chatbotAvatar.webp";
+        const userAvatar = props.user.image ?? assets.defaultUserAvatar;
+        const avatar = isAuthorMsg ? userAvatar : assets.chatBotAvatar;
 
         return (
           <Message
-            key={msg?.id}
+            key={msg.id}
             content={msg.content}
             createdAt={msg.createdAt}
             id={msg.id}
@@ -71,6 +79,15 @@ export const MessageList: React.FC<Props> = (props) => {
           />
         );
       })}
+      {llmProgressReport && (
+        <Message
+          avatar={assets.loadingIcon}
+          content={llmProgressReport.text}
+          isAuthorMsg={false}
+          username={props.user.name}
+          actionMsg={"Loading..."}
+        />
+      )}
       <div ref={scrollRef} />
     </div>
   );

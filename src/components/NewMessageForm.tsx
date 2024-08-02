@@ -1,24 +1,38 @@
 "use client";
 
-import { useState } from "react";
-import { gql, useMutation } from "@apollo/client";
+import { Chat } from "@/actions/chat";
+import { useWebLlmContext } from "@/components/LlmProvider";
+import { useAddMessageMutation } from "@/networking/mutations/useAddMessageMutation";
+import { $Enums } from "@prisma/client";
+import clsx from "clsx";
 import { useSession } from "next-auth/react";
+import React, { useState } from "react";
 
-export const NewMessageForm = () => {
-  // const [addNewMessage] = useMutation(AddNewMessageMutation);
+interface Props {
+  chat: Chat;
+}
+
+export const NewMessageForm: React.FC<Props> = (props) => {
   const [body, setBody] = useState<string>();
   const { data: session } = useSession();
-  const addNewMessage = () => console.log("NEW MSG");
+  const { mutate, data: addedMessage } = useAddMessageMutation();
+  const { llmProgressReport } = useWebLlmContext();
+
+  const isDisabled = !body || !session || !!llmProgressReport;
 
   return (
     <form
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
+        if (!body) return;
 
-        if (body) {
-          addNewMessage();
-          setBody("");
-        }
+        mutate({
+          chatId: props.chat.id,
+          content: body,
+          sender: $Enums.SenderType.USER,
+          type: "TEXT",
+        });
+        setBody("");
       }}
       className="flex items-center space-x-3"
     >
@@ -30,12 +44,21 @@ export const NewMessageForm = () => {
         placeholder="Write a message..."
         value={body}
         onChange={(e) => setBody(e.target.value)}
-        className="flex-1 h-12 px-3 rounded bg-neutral-800 border border-neutral-800 focus:border-neutral-800 focus:outline-none text-white placeholder-white"
+        className={clsx(
+          "flex-1 h-12 px-3 rounded bg-neutral-800 border border-neutral-800 focus:border-neutral-800 focus:outline-none text-white placeholder-white",
+          { "opacity-45": isDisabled }
+        )}
+        disabled={isDisabled}
       />
       <button
         type="submit"
-        className="bg-neutral-800 active:opacity-75 hover:cursor-pointer  rounded h-12 font-medium text-white w-24 text-lg border border-transparent "
-        disabled={!body || !session}
+        className={clsx(
+          "bg-neutral-800 active:opacity-75 hover:cursor-pointer  rounded h-12 font-medium text-white w-24 text-lg border border-transparent ",
+          {
+            "opacity-45": isDisabled,
+          }
+        )}
+        disabled={isDisabled}
       >
         Send
       </button>

@@ -90,7 +90,7 @@ export const MessageList: React.FC<Props> = (props) => {
           content={reply}
           isAuthorMsg={false}
           username={props.user.name}
-          actionMsg={"Typing..."}
+          actionMsg={"Generating response..."}
         />
       )}
       <div ref={scrollRef} />

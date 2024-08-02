@@ -2,8 +2,6 @@
 
 import { Chat } from "@/actions/chat";
 import { useWebLlmContext } from "@/components/LlmProvider";
-import { useAddMessageMutation } from "@/networking/mutations/useAddMessageMutation";
-import { $Enums } from "@prisma/client";
 import clsx from "clsx";
 import { useSession } from "next-auth/react";
 import React, { useState } from "react";
@@ -15,7 +13,6 @@ interface Props {
 export const NewMessageForm: React.FC<Props> = (props) => {
   const [body, setBody] = useState<string>();
   const { data: session } = useSession();
-  const { mutateAsync, data: addedMessage } = useAddMessageMutation();
   const { llmProgressReport, onReply } = useWebLlmContext();
 
   const isDisabled = !session || !!llmProgressReport;
@@ -27,13 +24,7 @@ export const NewMessageForm: React.FC<Props> = (props) => {
         if (!body) return;
 
         setBody("");
-        await mutateAsync({
-          chatId: props.chat.id,
-          content: body,
-          sender: $Enums.SenderType.USER,
-          type: "TEXT",
-        });
-        onReply(props.chat.id);
+        onReply({ chatId: props.chat.id, content: body });
       }}
       className="flex items-center space-x-3"
     >

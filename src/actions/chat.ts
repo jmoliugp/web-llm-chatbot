@@ -9,7 +9,7 @@ interface ServerActionResponse<Data> {
   error?: string;
 }
 
-interface RetrieveLatestChatResponse {
+export interface ChatMessages {
   id: number;
   messages: {
     id: number;
@@ -43,7 +43,7 @@ export async function getLatestChat(userId: number): Promise<Chat> {
 
 export async function getMessages(
   chatId: number
-): Promise<RetrieveLatestChatResponse | null> {
+): Promise<ChatMessages | null> {
   const messages = await prisma.message.findMany({
     where: {
       chatId,
@@ -65,7 +65,7 @@ export async function getMessages(
 
 export async function retrieveLatestChat(
   userId: number
-): Promise<RetrieveLatestChatResponse | null> {
+): Promise<ChatMessages | null> {
   const userChats = await prisma.chat.findMany({
     where: {
       user: { id: userId },
@@ -124,5 +124,44 @@ export async function createNewChat(userId: number) {
     throw error;
   } finally {
     await prisma.$disconnect();
+  }
+}
+
+export interface InputMessage {
+  chatId: number;
+  sender: $Enums.SenderType;
+  content: string;
+  type: $Enums.MessageType;
+}
+
+export interface Message {
+  id: number;
+  chatId: number;
+  sender: $Enums.SenderType;
+  content: string;
+  createdAt: Date;
+  type: $Enums.MessageType;
+}
+
+export async function addMessageToChat({
+  chatId,
+  content,
+  sender,
+  type,
+}: InputMessage): Promise<Message> {
+  try {
+    const newMessage = await prisma.message.create({
+      data: {
+        chatId,
+        sender,
+        content,
+        type,
+      },
+    });
+
+    return newMessage;
+  } catch (error) {
+    console.error("Error adding message:", error);
+    throw new Error("Could not add message to chat");
   }
 }

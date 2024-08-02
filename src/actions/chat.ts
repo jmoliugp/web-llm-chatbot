@@ -9,16 +9,18 @@ interface ServerActionResponse<Data> {
   error?: string;
 }
 
+export interface ChatMessage {
+  id: number;
+  chatId: number;
+  sender: $Enums.SenderType;
+  content: string;
+  createdAt: Date;
+  type: $Enums.MessageType;
+}
+
 export interface ChatMessages {
   id: number;
-  messages: {
-    id: number;
-    chatId: number;
-    sender: $Enums.SenderType;
-    content: string;
-    createdAt: Date;
-    type: $Enums.MessageType;
-  }[];
+  messages: ChatMessage[];
 }
 
 export interface Chat {

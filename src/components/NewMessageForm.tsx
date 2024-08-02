@@ -15,10 +15,10 @@ interface Props {
 export const NewMessageForm: React.FC<Props> = (props) => {
   const [body, setBody] = useState<string>();
   const { data: session } = useSession();
-  const { mutate, data: addedMessage } = useAddMessageMutation();
-  const { llmProgressReport } = useWebLlmContext();
+  const { mutateAsync, data: addedMessage } = useAddMessageMutation();
+  const { llmProgressReport, onReply } = useWebLlmContext();
 
-  const isDisabled = !body || !session || !!llmProgressReport;
+  const isDisabled = !session || !!llmProgressReport;
 
   return (
     <form
@@ -26,13 +26,14 @@ export const NewMessageForm: React.FC<Props> = (props) => {
         e.preventDefault();
         if (!body) return;
 
-        mutate({
+        setBody("");
+        await mutateAsync({
           chatId: props.chat.id,
           content: body,
           sender: $Enums.SenderType.USER,
           type: "TEXT",
         });
-        setBody("");
+        onReply(props.chat.id);
       }}
       className="flex items-center space-x-3"
     >
@@ -58,7 +59,7 @@ export const NewMessageForm: React.FC<Props> = (props) => {
             "opacity-45": isDisabled,
           }
         )}
-        disabled={isDisabled}
+        disabled={isDisabled || !body}
       >
         Send
       </button>

@@ -24,17 +24,13 @@ export const MessageList: React.FC<Props> = (props) => {
     trackVisibility: true,
     delay: 500,
   });
-  const { llmProgressReport, initWebLlm } = useWebLlmContext();
+  const { llmProgressReport, reply } = useWebLlmContext();
 
   useEffect(() => {
     if (inView) {
       entry?.target?.scrollIntoView({ behavior: "auto" });
     }
   }, [entry, inView]);
-
-  useEffect(() => {
-    initWebLlm();
-  }, []);
 
   const messages = chat?.messages ?? [];
 
@@ -86,6 +82,15 @@ export const MessageList: React.FC<Props> = (props) => {
           isAuthorMsg={false}
           username={props.user.name}
           actionMsg={"Loading..."}
+        />
+      )}
+      {reply && (
+        <Message
+          avatar={assets.chatBotAvatar}
+          content={reply}
+          isAuthorMsg={false}
+          username={props.user.name}
+          actionMsg={"Typing..."}
         />
       )}
       <div ref={scrollRef} />

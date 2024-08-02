@@ -1,6 +1,7 @@
 "use client";
 
 import { ChatMessage, ChatMessages } from "@/actions/chat";
+import { useAddMessageMutation } from "@/networking/mutations/useAddMessageMutation";
 import { QueryKey } from "@/networking/types";
 import {
   ChatCompletionMessageParam,
@@ -8,6 +9,7 @@ import {
   InitProgressReport,
   MLCEngine,
 } from "@mlc-ai/web-llm";
+import { $Enums } from "@prisma/client";
 import { useQueryClient } from "@tanstack/react-query";
 import React, {
   createContext,
@@ -24,12 +26,17 @@ enum LlmModel {
 interface Context {
   initWebLlm: () => Promise<void>;
   llmProgressReport?: InitProgressReport;
-  onReply: (chatId: number) => Promise<void>;
+  onReply: (msg: NewMsg) => Promise<void>;
   reply: string | undefined;
 }
 
 interface Props {
   children?: ReactNode | undefined;
+}
+
+interface NewMsg {
+  chatId: number;
+  content: string;
 }
 
 const WebLlmContext = createContext<Context>({} as Context);
@@ -41,6 +48,8 @@ export const WebLlmProvider: React.FC<Props> = ({ children }) => {
   const [llmProgressReport, setLlmProgressReport] = useState<
     InitProgressReport | undefined
   >(undefined);
+  const { mutate: addNewMessage, mutateAsync: addNewMessageAsync } =
+    useAddMessageMutation();
   const queryClient = useQueryClient();
 
   const initWebLlm = async () => {
@@ -59,18 +68,40 @@ export const WebLlmProvider: React.FC<Props> = ({ children }) => {
     initWebLlm();
   }, []);
 
-  const onReply = async (chatId: number) => {
+  const onReply = async (newMsg: NewMsg) => {
     if (!engine) return;
 
-    const rawMessages: ChatMessage[] =
-      queryClient.getQueryData<ChatMessages>([QueryKey.ChatMessages, chatId])
-        ?.messages ?? [];
-    const messages: ChatCompletionMessageParam[] = rawMessages.map((rawMsg) => {
-      return {
-        role: rawMsg.sender === "LLM" ? "system" : "user",
-        content: rawMsg.content,
-      };
+    addNewMessage({
+      chatId: newMsg.chatId,
+      content: newMsg.content,
+      sender: $Enums.SenderType.USER,
+      type: "TEXT",
     });
+
+    const rawMessages: ChatMessage[] =
+      queryClient.getQueryData<ChatMessages>([
+        QueryKey.ChatMessages,
+        newMsg.chatId,
+      ])?.messages ?? [];
+    const messagesHistory: ChatCompletionMessageParam[] = rawMessages.map(
+      (rawMsg) => {
+        return {
+          role: rawMsg.sender === "LLM" ? "assistant" : "user",
+          content: rawMsg.content,
+        };
+      }
+    );
+    const messages: ChatCompletionMessageParam[] = [
+      {
+        role: "system",
+        content: "You are a helpful assistant.",
+      },
+      ...messagesHistory,
+      {
+        role: "user",
+        content: newMsg.content,
+      },
+    ];
 
     const chunks = await engine.chat.completions.create({
       messages,
@@ -88,7 +119,13 @@ export const WebLlmProvider: React.FC<Props> = ({ children }) => {
     }
 
     const fullReply = await engine.getMessage();
-    console.log(fullReply);
+    await addNewMessageAsync({
+      chatId: newMsg.chatId,
+      content: fullReply,
+      sender: $Enums.SenderType.LLM,
+      type: "TEXT",
+    });
+    setReply(undefined);
   };
 
   return (

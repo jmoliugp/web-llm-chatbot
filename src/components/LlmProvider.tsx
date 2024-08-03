@@ -47,7 +47,11 @@ export const WebLlmProvider: React.FC<Props> = ({ children }) => {
   const [reply, setReply] = useState<string | undefined>();
   const [llmProgressReport, setLlmProgressReport] = useState<
     InitProgressReport | undefined
-  >(undefined);
+  >({
+    progress: 0,
+    text: "Loading engine...",
+    timeElapsed: 0,
+  });
   const { mutate: addNewMessage, mutateAsync: addNewMessageAsync } =
     useAddMessageMutation();
   const queryClient = useQueryClient();

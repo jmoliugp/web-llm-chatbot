@@ -1,5 +1,6 @@
 "use client";
 
+import { assets } from "@/lib/constants";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 
@@ -11,7 +12,12 @@ export function Header() {
       <div className="mx-auto">
         <div className="flex justify-between items-center">
           <div className="flex flex-row justify-center items-center gap-2">
-            <Image width={34} height={34} src="chatIcon.svg" alt={"App icon"} />
+            <Image
+              width={34}
+              height={34}
+              src={assets.chatIcon}
+              alt={"App icon"}
+            />
             <span className="text-white font-bold text-xl">
               Web-Llm-Chatbot
             </span>
@@ -44,7 +50,7 @@ export function Header() {
                 <Image
                   width={26}
                   height={26}
-                  src="github.svg"
+                  src={assets.githubIcon}
                   alt={"Github icon"}
                 />
                 Sign in with GitHub

@@ -15,24 +15,24 @@ model User {
   image         String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  chats         Chat[]
   Account       Account[]
+  Chat          Chat[]
   Session       Session[]
 }
 
 model Chat {
   id        Int       @id @default(autoincrement())
   userId    Int
-  user      User      @relation(fields: [userId], references: [id])
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  messages  Message[]
+  Message   Message[]
 }
 
 model Message {
   id        Int         @id @default(autoincrement())
   chatId    Int
-  chat      Chat        @relation(fields: [chatId], references: [id])
+  chat      Chat        @relation(fields: [chatId], references: [id], onDelete: Cascade)
   sender    SenderType
   content   String
   createdAt DateTime    @default(now())
